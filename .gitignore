@@ -1,0 +1,169 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env
+.venv
+env.bak/
+venv.bak/
+pythonenv*
+virtualenv/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environments and configuration
+.env
+.env
+.env.development
+.env.test
+.env.production
+.env.staging
+*.env
+
+# IDE - VS Code
+.vscode/
+*.code-workspace
+
+# IDE - PyCharm/IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+out/
+
+# IDE - Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# IDE - Eclipse
+.project
+.pydevproject
+.settings/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Poetry
+poetry.lock
+
+# Pipenv
+Pipfile.lock
+
+# DB
+*.sqlite3
+*.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.swp
+*.swo
+*~
+tmp/
+temp/
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Generated files
+generated/
+
+# Local data
+data/
+*.csv
+*.json
+*.xlsx
+*.xls
+*.parquet
+*.pickle
+*.pkl
+
+# API keys and secrets
+*.pem
+*.key
+credentials.json
+client_secrets.json
+
+# Dependency directories
+node_modules/
+jspm_packages/
+bower_components/
+
+# Documentation builds
+docs/_build/
+docs/site/
+site/
+
+# Deployment-specific
+.vercel
+.netlify
