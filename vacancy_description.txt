@@ -1,70 +1,61 @@
-Senior Unity Developer C#
-Rabbit Games aims to become the preferred co-development game studio for developers and publishers across the globe. Leveraging our extensive expertise in PC, mobile and console titles, we strive to co-develop some of the world’s leading gaming brands. Our international and diverse team endeavours to create gaming experiences that leave a lasting impact on players.
+ InGame Job
+Senior Unity Developer
+Senior Unity Developer
+Deemedya , Posted 2 days ago
 
-We are looking for a highly skilled and experienced Senior Unity Developer C# (Client) to join our team and contribute to the development of visually rich, high-performance game clients across PC, console, and mobile platforms. You will be responsible for implementing gameplay features, UI systems, and performance-optimized code within Unity.
+ Senior
 
+ Full time
 
+ Negotiable
+
+ Remote
+
+Deemedya is a veteran mobile game development company with over a decade of successful titles like Trial Xtreme 4 and Duels PVP. We are looking for a Senior Unity Developer to manage the company games development, lead technical direction, and support our mission of delivering top-tier mobile gaming experiences to a massive global audience.
+
+Role Overview
+You’ll lead the development of our mobile games, driving the creation and improvement of game features, and ensuring performance optimization. Your primary responsibilities will include implementing new game functionalities, making architectural decisions, breaking it to many smaller tasks, set deallines and coordinate it with the team.
+
+What are you working on?
+Genres: Racing, Casual
+Platforms: Mobile
 For which tasks (responsibilities)?
-Design and implement high-quality, scalable client-side game features
+Feature Development: Implement new game features in a fast-paced, agile environment.
 
-Collaborate with designers and artists to bring gameplay mechanics and UI/UX to life
+Technical Leadership: Make strategic architectural decisions and guide them through to implementation.
 
-Optimize rendering and runtime performance across multiple platforms (including mobile)
+Maintenance: Refine and debug games, ensuring high-quality performance and stability.
 
-Ensure responsive, bug-free player experience through profiling, debugging, and refactoring
-
-Maintain and extend the codebase with clean, modular, and well-documented code
-
-Participate in regular code reviews and contribute to continuous improvement of development processes
-
+Team Collaboration: Clearly communicate goals, progress, and updates with our small, close-knit team.
 
 What kind of professional are we looking for?
-5+ years of experience working in Unity as a client-side developer
+Expert proficiency in Unity, C#, and 3D game development.
 
-Solid knowledge of C#, Unity's rendering pipeline (URP/HDRP), animation, and UI systems
+3+ years of professional experience, with proven success in shipping high-quality games.
 
-Hands-on experience developing mobile games (iOS/Android) with attention to performance and memory usage
+Strong skills in data structures, algorithms, and distributed systems.
 
-Understanding of game architecture, OOP principles, and SOLID design patterns
+Experience with client/server game systems.
 
-Proficiency in profiling and optimizing GPU/CPU performance
+Previous experience leading a development team or working collaboratively in a small team.
 
-Experience integrating third-party SDKs (analytics, ads, IAP, etc.)
+Nice to have:
 
-Familiarity with asynchronous programming
+Degree in Computer Science, Mathematics, Physics, or a related field.
 
-Strong math skills, especially in vector algebra and transformations
+Experience with client/server game systems and multi-platform or console titles.
 
-At least one shipped title or equivalent live product experience
+Familiarity with Telegram bot/game APIs or interest in cross-platform integration.
 
-Good communication skills and ability to work in cross-functional teams
+A big part of your work will be working on Trial Xtreme 4 and Duels PVP, so it will be good if you will connect to those games.
 
-English: B1 or higher
-
-
-
-Nice to Have
-
-Experience with Game Center, Arcade, Steam, EOS
-
-Experience with multiplayer features or Unity networking stacks
-
-Knowledge of mobile platform requirements (App Store / Google Play compliance, optimization)
-
-Experience working with console platforms (Xbox, PlayStation)
-
-Familiarity with DOTS, ECS, or Unity's job system
-
+Good English communication skills to be able to communicate with the team.
 
 What are the conditions and bonuses?
-Remote, hybrid or onsite work in Poznan or Warsaw (Poland)
+100% remote work forever
 
-B2B
+Opportunity to effect game design.
 
-Paid leave: 20 days per year
+A diverse range of tasks and opportunities for professional growth.
 
-Sick leave 5 days per year
-
-Start your workday anytime between 9am to 12pm
-
-Co-financing of sport cards
+With millions of active users, your work will affect a huge audience base that presents limitless growth potential.
