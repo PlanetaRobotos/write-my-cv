@@ -1,6 +1,7 @@
 from docxtpl import DocxTemplate
 from docx2pdf import convert
 import os
+import re
 from .generators.role_generator import RoleGenerator
 from .generators.skills_generator import SkillsGenerator
 from .generators.summary_generator import SummaryGenerator
@@ -160,26 +161,59 @@ class CVGenerator:
             # Check if file is available for writing
             while True:
                 try:
-                    # Try to open the file in write mode to check if it's available
-                    with open(output_docx_path, 'a'):
-                        break
+                    with open(output_docx_path, 'w') as f:
+                        pass
+                    break
                 except IOError:
-                    print(f"\nThe file {output_docx_path} is currently in use (likely opened in Word).")
+                    print(f"\nThe file {output_docx_path} is currently in use.")
                     print("Please close the file and press Enter to continue...")
                     input()
                     continue
 
+            # Create a modified context with appropriate styling for docxtpl
+            styled_context = {}
+            for key, value in self.context.items():
+                if isinstance(value, str) and "<BOLD>" in value:
+                    # Replace <BOLD> tags with docxtpl's rich text format
+                    styled_text = []
+                    parts = re.split(r'(<BOLD>.*?</BOLD>)', value)
+
+                    for part in parts:
+                        if part.startswith('<BOLD>') and part.endswith('</BOLD>'):
+                            # Extract text between tags
+                            bold_text = re.sub(r'<BOLD>(.*?)</BOLD>', r'\1', part)
+                            styled_text.append({'text': bold_text, 'bold': True})
+                        elif part:
+                            styled_text.append({'text': part})
+
+                    styled_context[key] = styled_text
+                else:
+                    styled_context[key] = value
+
+            # Render template with styled context
+            from docxtpl import DocxTemplate, RichText
+
             doc = DocxTemplate(self.template_path)
-            doc.render(self.context)
+
+            # Convert styled_context entries to RichText objects
+            for key, value in styled_context.items():
+                if isinstance(value, list) and all(isinstance(item, dict) for item in value):
+                    rt = RichText()
+                    for item in value:
+                        if item.get('bold', False):
+                            rt.add(item['text'], bold=True)
+                        else:
+                            rt.add(item['text'])
+                    styled_context[key] = rt
+
+            doc.render(styled_context)
             doc.save(output_docx_path)
             print(f"CV successfully saved as {output_docx_path}")
 
-            # Uncomment to enable PDF conversion
-            # convert(output_docx_path, output_pdf_path)
-            # print(f"CV successfully converted to PDF: {output_pdf_path}")
-
         except Exception as e:
             print(f"Error rendering template: {e}")
+            import traceback
+            traceback.print_exc()
 
     def generate_cv(self):
         """Generate CV content based on user selection."""

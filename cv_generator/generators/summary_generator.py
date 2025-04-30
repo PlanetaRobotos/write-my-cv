@@ -15,7 +15,11 @@ class SummaryGenerator(BaseGenerator):
         summary_prompt = """
         Create a powerful, professional summary for a Unity Developer CV. Model it after this high-quality example:
 
-        EXAMPLE: "Accomplished and empathetic people-first leader known for constructing collaborative cultures and win-win relationships with teammates, partners, clients, and customers. Experienced at developing and deploying strategies to grow new business segments and innovations in retail, e-commerce, hardware, digital distribution, social, and mobile platforms. Highly successful at leading negotiations and closing complex, eight and nine figure contracts that yield increased revenue for all partners."
+        EXAMPLE: "Accomplished and empathetic people-first leader known for constructing collaborative cultures 
+        and win-win relationships with teammates, partners, clients, and customers. Experienced at developing 
+        and deploying strategies to grow new business segments and innovations in retail, e-commerce, hardware, 
+        digital distribution, social, and mobile platforms. Highly successful at leading negotiations 
+        and closing complex, eight and nine figure contracts that yield increased revenue for all partners."
 
         For this Unity Developer's summary:
 

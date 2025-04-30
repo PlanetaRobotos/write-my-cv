@@ -14,21 +14,25 @@ class RoleGenerator(BaseGenerator):
         self.job_keywords = self._extract_job_keywords()
 
     def _extract_job_keywords(self):
-        """Extract key technical terms from the job description."""
+        """Extract key technical terms and achievement patterns from the job description."""
         if not self.vacancy_text:
             return []
 
         prompt = (
-            "Extract the top 15 most important technical keywords/skills from this job description. "
-            "Return only a JSON array of strings with no explanation. "
-            "Focus on specific technologies, frameworks, and methodologies. "
-            "Example format: {\"keywords\": [\"Unity\", \"C#\", \"SOLID principles\", \"Multiplayer development\"]}\n\n"
+            "Analyze this job description and extract TWO TYPES of information:\n"
+            "1. The top 12 TECHNICAL KEYWORDS/SKILLS that are crucial for this role\n"
+            "2. The top 3 ACHIEVEMENT PATTERNS/METRICS that the employer values\n\n"
+            "Return a JSON object with two arrays:\n"
+            "{\n"
+            "  \"technical_keywords\": [\"Unity\", \"C#\", \"SOLID principles\", ...],\n"
+            "  \"achievement_patterns\": [\"performance optimization\", \"team leadership\", ...]\n"
+            "}\n\n"
             f"Job Description:\n{self.vacancy_text}"
         )
 
         messages = [
             {"role": "system",
-             "content": "You extract technical keywords from job descriptions and return them as a JSON array."},
+             "content": "You extract key information from job descriptions to craft targeted resumes."},
             {"role": "user", "content": prompt}
         ]
 
@@ -40,18 +44,28 @@ class RoleGenerator(BaseGenerator):
                 temperature=0.2
             )
             result = json.loads(response.choices[0].message.content)
-            return result.get("keywords", [])
+            # For backward compatibility, we'll continue using job_keywords
+            return result.get("technical_keywords", [])
         except Exception as e:
             print(f"Error extracting job keywords: {e}")
             return []
 
     def _create_role_context(self):
-        """Create a contextual overview of all roles."""
-        career_context = "Career Progression Overview:\n\n"
+        """Create a contextual overview showing clear career progression."""
+        career_context = "CAREER PROGRESSION (Most Recent First):\n\n"
+
+        # Define clear seniority levels for each role
+        seniority_mapping = {
+            "LUCID": "Senior/Lead Developer Role",
+            "GALAXY": "Senior Developer Role",
+            "WHIMSY": "Mid-Level Developer Role",
+            "APPSIDE": "Junior-Mid Developer Role",
+            "WOUFF": "Junior Developer Role"
+        }
+
         for role, config in self.roles_config.items():
-            # Split the default info by comma and clean up
             default_info = [desc.strip() for desc in self.default_info.get(role, '').split(',') if desc.strip()]
-            career_context += f"{role}:\n"
+            career_context += f"{role} ({seniority_mapping[role]}):\n"
             for desc in default_info:
                 career_context += f"- {desc}\n"
             career_context += "\n"
@@ -62,8 +76,10 @@ class RoleGenerator(BaseGenerator):
         career_context = self._create_role_context()
         processed_keywords = set()
         ordered_roles = ["WOUFF", "APPSIDE", "WHIMSY", "GALAXY", "LUCID"]
+        attempts_per_role = {}  # Track how many attempts per role
 
         for role in ordered_roles:
+            attempts_per_role[role] = 0
             config = self.roles_config[role]
             role_description = self.default_info.get(role, "")
             count = config["count"]
@@ -82,9 +98,25 @@ class RoleGenerator(BaseGenerator):
 
             self.selected_role_keywords[role] = priority_keywords
 
-            # Generate description
+            # Generate description with retry logic
             self._generate_role_description(role, career_context, role_description,
                                             count, half_count, priority_keywords)
+
+            # If no valid descriptions were generated, retry with different temperature
+            max_attempts = 3
+            while (role not in self.role_descriptions or not self.role_descriptions[role] or
+                   len(self.role_descriptions[role]) < count) and attempts_per_role[role] < max_attempts:
+                attempts_per_role[role] += 1
+                print(f"Retrying generation for {role} (attempt {attempts_per_role[role]})")
+
+                # Adjust temperature and top keyword selection based on attempt number
+                temperature = 0.7 + (attempts_per_role[role] * 0.1)  # Increase randomness
+                keyword_count = 5 + attempts_per_role[role]  # Use more keywords
+                retry_keywords = self.job_keywords[:keyword_count]
+
+                self._generate_role_description(role, career_context, role_description,
+                                                count, half_count, retry_keywords,
+                                                temperature=temperature)
 
             # Store descriptions in context with proper template tags
             descriptions = self.role_descriptions.get(role, [])
@@ -92,140 +124,208 @@ class RoleGenerator(BaseGenerator):
                 self.context[f"ROLE_DESCRIPTION_{role}_{i}"] = desc
 
             # Update processed keywords
-            for point in self.role_descriptions[role]:
+            for point in self.role_descriptions.get(role, []):
                 for keyword in self.job_keywords:
                     if keyword.lower() in point.lower():
                         processed_keywords.add(keyword.lower())
 
-        # Apply Word formatting to the document
-        if hasattr(self, 'document'):
-            self.format_document_with_bold(self.document)
-
         return self.role_descriptions, self.selected_role_keywords
 
     def _generate_role_description(self, role, career_context, role_description,
-                                   count, half_count, priority_keywords):
+                                   count, half_count, priority_keywords, temperature=0.7):
         """Generate description for a specific role."""
+        # Define seniority level based on role
+        seniority_mapping = {
+            "LUCID": "Senior/Lead Developer",
+            "GALAXY": "Senior Developer",
+            "WHIMSY": "Mid-Level Developer",
+            "APPSIDE": "Junior-Mid Developer",
+            "WOUFF": "Junior Developer"
+        }
+
+        seniority_level = seniority_mapping.get(role, "Developer")
+
         ROLE_SYSTEM_INSTRUCTION = """
-        You are an expert CV writer crafting a Unity Developer's work experience that STANDS OUT to hiring managers.
+        You are an expert CV writer crafting a Unity Developer's work experience that will STAND OUT and get interviews.
 
-        Your task:
-        1. Write {count} powerful bullet points (120 characters max each) for the {role} position.
-        2. Start each bullet with a STRONG ACTION VERB (no dash/hyphen prefix).
-        3. Focus on OUTCOMES and IMPACT - not just responsibilities.
-        4. For each bullet point, follow this pattern: ACTION + CHALLENGE/CONTEXT + RESULT with metrics.
-        5. Include these keywords across your bullet points: {keywords}.
+        Create {count} powerful bullet points for the {role} position ({seniority_level}).
 
-        Each bullet point must tell ONE of these three story types:
-        - REACHING NEW HEIGHTS: Show quantifiable achievements with impressive metrics
-        - TURNAROUND STORIES: Describe obstacles overcome to achieve success
-        - FIRSTS: Highlight pioneering work or innovation never done before
+        EACH BULLET POINT MUST:
+        1. Start with a STRONG ACTION VERB (engineered, optimized, architected, designed)
+        2. Show what YOU DID, not what you were responsible for
+        3. Include at least one SPECIFIC, IMPRESSIVE METRIC that can be highlighted
+        4. Follow one of these story patterns:
+           - REACHING NEW HEIGHTS: Show achievement of a big, round number milestone
+           - TURNAROUND STORY: Show how you overcame specific obstacles to achieve success 
+           - FIRSTS: Highlight something you did that had never been done before
+        5. Include these keywords across all bullets: {keywords}
 
-        Important rules:
-        - Include ONE clear metric in each bullet point (e.g., 30%, 2x, 5 seconds)
-        - Be SPECIFIC with numbers to allow for proper formatting later
-        - Show COMPLEXITY - hint at the challenging environment you succeeded in
-        - NO generic job descriptions - only YOUR unique accomplishments
-        - Do NOT use asterisks for emphasis - metrics will be formatted later
+        FOR MAXIMUM SCANNABILITY:
+        Put <BOLD> tags around the most important parts:
+          - <BOLD>Key metrics and numbers</BOLD>
+          - <BOLD>Technical achievements</BOLD> and specialized skills
+          
+        STUDY THIS HIGHLIGHTING PATTERN:
+        * <BOLD>First of only 2 temporary employees hired</BOLD> out of a group in excess of 60 customer service representatives
+        * Awarded <BOLD>Representative of the Month</BOLD> on no less than five occasions
+        * Redefined quality standards with monthly <BOLD>monitoring scores of 93% and higher</BOLD>
+        * <BOLD>Mentored struggling representatives</BOLD> to increase their call monitoring performance
+        * <BOLD>Promoted twice</BOLD> from Tip Writer, to CS Web Technologist, to CS Web Specialist
+
+        FORMAT REQUIREMENTS:
+        - Maximum 120 characters per bullet point
+        - No bullet points/dashes/hyphens at the beginning
+        - No periods at the end
+        - Don't highlight more than 30% of the text
+        - Be consistent with formatting style within each bullet point
+
+        CREATE BULLETS THAT:
+        - Tell a COMPLETE STORY of achievement, not just responsibilities
+        - Put the most impressive information UP FRONT
+        - Show TECHNICAL COMPLEXITY and your unique contribution
+        - Would make a hiring manager think "This person gets results"
         """
 
         instruction = ROLE_SYSTEM_INSTRUCTION.format(
             count=count,
             role=role,
+            seniority_level=seniority_level,
             keywords=", ".join(priority_keywords)
         )
 
         messages = [
             {"role": "system", "content": instruction},
-            {"role": "user",
-             "content": f"Career Context:\n{career_context}\n\nRole to describe: {role}\n\nRole Description:\n{role_description}\n\nJob Description:\n{self.vacancy_text}\n\nWrite {count} bullet points:"}
+            {"role": "user", "content":
+                f"Career Context:\n{career_context}\n\n"
+                f"Role to describe: {role} ({seniority_level})\n\n"
+                f"Role Description:\n{role_description}\n\n"
+                f"Job Description:\n{self.vacancy_text}\n\n"
+                f"Write exactly {count} bullet points with appropriate <BOLD> tags."
+                f"Each should start with an action verb and include at least one specific metric."
+             }
         ]
 
         try:
+            print(f"Generating descriptions for {role} with temperature {temperature}")
             response = self.client.chat.completions.create(
                 messages=messages,
                 model="gpt-4o",
-                temperature=0.7
+                temperature=temperature
             )
 
-            bullet_points = self._process_response(response)
-            self.role_descriptions[role] = bullet_points
+            bullet_points = self._process_response(response, role)
+
+            # If we already have some descriptions for this role, extend rather than replace
+            if role in self.role_descriptions and self.role_descriptions[role]:
+                current_points = len(self.role_descriptions[role])
+                needed_points = count - current_points
+
+                if needed_points > 0 and bullet_points:
+                    self.role_descriptions[role].extend(bullet_points[:needed_points])
+            else:
+                self.role_descriptions[role] = bullet_points
+
+            # Log success or issues
+            if not bullet_points:
+                print(f"WARNING: No valid bullet points generated for {role}")
+                print(f"Raw response: {response.choices[0].message.content[:200]}...")
+            else:
+                print(f"Successfully generated {len(bullet_points)} points for {role}")
 
         except Exception as e:
             print(f"Error generating descriptions for {role}: {e}")
-            self.role_descriptions[role] = ["Error generating description"] * count
+            # Only set default error message if no descriptions exist yet
+            if role not in self.role_descriptions or not self.role_descriptions[role]:
+                self.role_descriptions[role] = ["Error generating description"] * count
 
-    def _process_response(self, response):
-        """Process the response to get clean bullet points with metrics identified."""
+    def _process_response(self, response, role):
+        """Process the response to get clean bullet points with proper formatting."""
         bullet_points = []
         raw_text = response.choices[0].message.content
 
-        # Split by line breaks and clean up
-        for line in raw_text.split('\n'):
-            line = line.strip()
+        # Log the raw response for debugging
+        print(f"Raw response for {role} (first 100 chars): {raw_text[:100]}...")
 
-            # Skip empty lines or lines that start with dashes
-            if not line or line.startswith('-'):
-                continue
+        # Split by line breaks and clean up
+        lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
+
+        # Keep track of valid and invalid lines for logging
+        valid_lines = []
+        rejected_lines = []
+
+        # Filter and process the lines
+        for line in lines:
+            original_line = line
+
+            # Remove any bullet point markers, numbers or dashes
+            if line.startswith('- '):
+                line = line[2:].strip()
+            elif line.startswith('• '):
+                line = line[2:].strip()
+            elif line.startswith('* '):
+                line = line[2:].strip()
+            elif len(line) > 2 and line[0].isdigit() and line[1:].startswith('. '):
+                line = line[line.find('.') + 1:].strip()
+            elif len(line) > 3 and line[0].isdigit() and line[1].isdigit() and line[2:].startswith('. '):
+                line = line[line.find('.') + 1:].strip()
 
             # Remove any trailing periods
             if line.endswith('.'):
                 line = line[:-1]
 
-            # Keep lines that start with action verbs (not bullets/numbers)
-            if line and not line[0].isdigit() and not line.startswith('-'):
-                # Identify metrics for later Word formatting
-                line = self._mark_metrics_for_formatting(line)
-                bullet_points.append(line)
+            # Skip very short lines or headers
+            if len(line) < 10:
+                rejected_lines.append(f"Too short: {original_line}")
+                continue
+
+            # Skip if it looks like a header or title (all caps, no formatting)
+            if line.isupper() and not re.search(r'<BOLD>|</BOLD>|\*\*', line):
+                rejected_lines.append(f"Looks like header: {original_line}")
+                continue
+
+            # Normalize bold tags - handle both HTML-style tags and markdown-style asterisks
+            # First normalize BOLD tags
+            line = re.sub(r'<\s*BOLD\s*>', '<BOLD>', line, flags=re.IGNORECASE)
+            line = re.sub(r'<\s*/\s*BOLD\s*>', '</BOLD>', line, flags=re.IGNORECASE)
+            line = re.sub(r'<\s*B\s*>', '<BOLD>', line, flags=re.IGNORECASE)
+            line = re.sub(r'<\s*/\s*B\s*>', '</BOLD>', line, flags=re.IGNORECASE)
+
+            # Now handle **bold** markdown format
+            # Convert ** to <BOLD> tags while being careful with spacing
+            asterisk_pattern = r'\*\*(.*?)\*\*'
+            while re.search(asterisk_pattern, line):
+                match = re.search(asterisk_pattern, line)
+                if match:
+                    bold_text = match.group(1)
+                    line = line.replace(f"**{bold_text}**", f"<BOLD>{bold_text}</BOLD>")
+
+            # Clean up any mismatched tags
+            open_tags = len(re.findall(r'<BOLD>', line))
+            close_tags = len(re.findall(r'</BOLD>', line))
+
+            if open_tags > close_tags:
+                line += '</BOLD>' * (open_tags - close_tags)
+            elif close_tags > open_tags:
+                line = '<BOLD>' * (close_tags - open_tags) + line
+
+            # Check for any non-BOLD HTML tags that might cause issues
+            if re.search(r'<(?!BOLD|/BOLD)[^>]+>', line):
+                # Instead of rejecting, try to clean these up
+                line = re.sub(r'<(?!BOLD|/BOLD)[^>]+>', '', line)
+
+            valid_lines.append(line)
+            bullet_points.append(line)
+
+        # Log results for debugging
+        print(f"Found {len(valid_lines)} valid lines for {role}")
+        if rejected_lines:
+            print(f"Rejected {len(rejected_lines)} lines for {role}")
+
+        # If all lines were filtered out but we have original content, make a best effort
+        if not bullet_points and lines:
+            print(f"All lines were filtered out for {role}, attempting to recover...")
+            # Take the longest lines as a fallback
+            lines.sort(key=len, reverse=True)
+            bullet_points = [line.strip() for line in lines[:5] if len(line) > 15]
 
         return bullet_points
-
-    def _mark_metrics_for_formatting(self, text):
-        """Mark metrics in text for later Bold formatting in Word."""
-        # Common metric patterns (percentages, multipliers, time measurements)
-        patterns = [
-            r'(\d+%)',  # Percentage (e.g., 30%)
-            r'(\d+x)',  # Multiplier (e.g., 5x)
-            r'(\d+\s*(?:seconds|minutes|hours|days|weeks|months))',  # Time
-            r'(\$\d+(?:[KMB])?)',  # Money (e.g., $10K, $5M)
-            r'((?:increased|decreased|reduced|improved|boosted|enhanced)\s+by\s+\d+%)',  # Changes
-        ]
-
-        # Add a marker around metrics for your document processor
-        for pattern in patterns:
-            text = re.sub(pattern, r'<BOLD>\1</BOLD>', text)
-
-        return text
-
-    def format_document_with_bold(self, document):
-        """Apply proper Word formatting based on markers."""
-        for role, descriptions in self.role_descriptions.items():
-            for i, desc in enumerate(descriptions):
-                # Extract parts to be bold
-                bold_parts = re.findall(r'<BOLD>(.*?)</BOLD>', desc)
-
-                # Remove markers for clean text
-                clean_desc = re.sub(r'<BOLD>(.*?)</BOLD>', r'\1', desc)
-
-                # Add bullet point to document
-                paragraph = document.add_paragraph()
-                paragraph.style = 'List Bullet'
-
-                # Process text to add proper Bold formatting
-                remaining_text = clean_desc
-                for bold_part in bold_parts:
-                    parts = remaining_text.split(bold_part, 1)
-                    if len(parts) > 1:
-                        # Add normal text
-                        paragraph.add_run(parts[0])
-                        # Add bold text
-                        paragraph.add_run(bold_part).bold = True
-                        # Update remaining text
-                        remaining_text = parts[1]
-                    else:
-                        # No more occurrences of this bold part
-                        break
-
-                # Add any remaining text
-                if remaining_text:
-                    paragraph.add_run(remaining_text)

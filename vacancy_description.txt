@@ -1,61 +1,59 @@
- InGame Job
-Senior Unity Developer
-Senior Unity Developer
-Deemedya , Posted 2 days ago
+Programming Lead
+Dreams on a Pillow
+Apply for this Job
+A share icon
+PostedMarch 26, 2025
+ContractAnywhereRemote
+Join award-winning game creators in developing a unique pseudo-3D stealth-adventure game set during the Palestinian Nakba of 1948. The project is designed for an Q4-2026 PC-first, multi-platform release, with a focus on realistic representation of the historical subject matter.
 
- Senior
+ 
 
- Full time
+Responsibilities:
 
- Negotiable
+Lead the programming team in developing core gameplay mechanics and gameplay systems.
+Architect, prototype, and optimize game features using Unity and C#.
+Collaborate with design and art teams to integrate gameplay systems seamlessly.
+Ensure performance optimization across platforms.
+Maintain code quality and guide the team in best practices.
+ 
 
- Remote
+Requirements:
 
-Deemedya is a veteran mobile game development company with over a decade of successful titles like Trial Xtreme 4 and Duels PVP. We are looking for a Senior Unity Developer to manage the company games development, lead technical direction, and support our mission of delivering top-tier mobile gaming experiences to a massive global audience.
+Proven experience as a Programming Lead or Senior programmer, ideally on one or more commercially released indie games in similar genres on multiple platforms (PC/Console).
+Expert knowledge of Unity and C#.
+Strong background in player movement, NPC/enemy behavior and environmental interaction systems.
+Experience with optimization techniques for multi-platform releases.
+Strong problem-solving skills and ability to lead in a remote, distributed team setup.
+Management experience; confident leading and mentoring a team of programmers.
+ 
 
-Role Overview
-You’ll lead the development of our mobile games, driving the creation and improvement of game features, and ensuring performance optimization. Your primary responsibilities will include implementing new game functionalities, making architectural decisions, breaking it to many smaller tasks, set deallines and coordinate it with the team.
+Additional Details:
 
-What are you working on?
-Genres: Racing, Casual
-Platforms: Mobile
-For which tasks (responsibilities)?
-Feature Development: Implement new game features in a fast-paced, agile environment.
+Job Title: Programming Lead – Pseudo-3D Adventure Game
+Type: Project-Based (Remote, Part-Time/Full-Time)
+Contract duration: Minimum 8 months, up to 16 months
+Reports to: Game Director
+Reports: Unity Developer
+Platform: Multi-Platform (PC-First)
+Genre: 2.5D adventure game
+Engine: Unity
+Setting: Real-World Historical
+Art Style: Realistic
+ 
 
-Technical Leadership: Make strategic architectural decisions and guide them through to implementation.
+How to Apply:
 
-Maintenance: Refine and debug games, ensuring high-quality performance and stability.
+Please send us an email with your resume and relevant experience. Include the role you're applying for in the subject line.
 
-Team Collaboration: Clearly communicate goals, progress, and updates with our small, close-knit team.
 
-What kind of professional are we looking for?
-Expert proficiency in Unity, C#, and 3D game development.
+About Dreams on a Pillow
+Rasheed Abueideh is the most notable game developer operating from Palestine, and has experience developing games about the history and realities of the Palestinian people. For Dreams on a Pillow, he will be joined by a group of a dozen veteran game developers, local talent, and a small group of volunteers from all around the world.
 
-3+ years of professional experience, with proven success in shipping high-quality games.
+‍
 
-Strong skills in data structures, algorithms, and distributed systems.
 
-Experience with client/server game systems.
+Featured Game
+Dreams on a Pillow is a pseudo-3D stealth adventure game inspired by a historical Palestinian folk tale set during the ethnic cleansing that was the 1948 Nakba. 
 
-Previous experience leading a development team or working collaboratively in a small team.
+In Dreams on a Pillow, Omm is a young mother from an olive farmers’ family in al-Tantura. Throughout the game, the player traverses historical events and stories of the Nakba as Omm attempts an escape towards Lebanon in the North. Whenever Omm has an opportunity to rest on her perilous journey, she dreams of her childhood - reliving a rapidly fading memory of a pre-Zionist Palestine. Using historical documentation and imagery, two decades of untold Palestinian history is carefully implemented and beautifully rendered, to disprove the common propaganda myth of “a land without people for a people without land”.
 
-Nice to have:
-
-Degree in Computer Science, Mathematics, Physics, or a related field.
-
-Experience with client/server game systems and multi-platform or console titles.
-
-Familiarity with Telegram bot/game APIs or interest in cross-platform integration.
-
-A big part of your work will be working on Trial Xtreme 4 and Duels PVP, so it will be good if you will connect to those games.
-
-Good English communication skills to be able to communicate with the team.
-
-What are the conditions and bonuses?
-100% remote work forever
-
-Opportunity to effect game design.
-
-A diverse range of tasks and opportunities for professional growth.
-
-With millions of active users, your work will affect a huge audience base that presents limitless growth potential.
